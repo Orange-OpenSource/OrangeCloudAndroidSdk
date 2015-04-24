@@ -74,28 +74,41 @@ public class CloudAPIException extends OrangeAPIException {
                 Log.v("CloudAPIException", str);
                 JSONObject errorJson = new JSONObject(str);
                 if (errorJson != null) {
+                    JSONObject errorJsonLv1 = errorJson.optJSONObject("error");
+                    if (errorJsonLv1 != null) {
+                        this.code = errorJsonLv1.optString("code");
 
-                    errorJson = errorJson.optJSONObject("error");
-                    if (errorJson != null) {
-                        this.code = errorJson.optString("code");
-
-                        this.message = errorJson.optString("message");
+                        this.message = errorJsonLv1.optString("message");
                         if (TextUtils.isEmpty(this.message)) {
-                            this.message = errorJson.optString("label");
+                            this.message = errorJsonLv1.optString("label");
                         }
-                        this.description = errorJson.optString("description");
+                        this.description = errorJsonLv1.optString("description");
                         if (TextUtils.isEmpty(this.description)) {
-                            this.description = errorJson.optString("details");
+                            this.description = errorJsonLv1.optString("details");
                         }
                     } else {
-                        // Identity Error
-                        this.code = errorJson.optString("error");
-                        this.message = errorJson.optString("error");
-                        this.description = errorJson.optString("error_description");
+                        String err = errorJson.optString("error");
+                        if (!err.isEmpty()) {
+                            // Identity Error
+                            this.code = errorJson.optString("error");
+                            this.message = errorJson.optString("error");
+                            this.description = errorJson.optString("error_description");
+                        } else {
+                            this.code = errorJson.optString("code");
+
+                            this.message = errorJson.optString("message");
+                            if (TextUtils.isEmpty(this.message)) {
+                                this.message = errorJson.optString("label");
+                            }
+                            this.description = errorJson.optString("description");
+                            if (TextUtils.isEmpty(this.description)) {
+                                this.description = errorJson.optString("details");
+                            }
+                        }
                     }
                 } else {
                     this.message = "";
-                    this.description = "";
+                    this.description = str;
                     this.code = "";
                 }
             }

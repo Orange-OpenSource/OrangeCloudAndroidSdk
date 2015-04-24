@@ -212,30 +212,33 @@ public class AuthSession implements Session {
         String url = API_SERVER + "/oauth/v2/token";
 
         // Prepare params in body request
-        JSONObject params = new JSONObject();
-        try {
-            params.put("grant_type", "refresh_token");
-            params.put("refresh_token", getRefreshToken());
-            params.put("scope", getScope());
-            params.put("redirect_uri", getRedirectUri());
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("grant_type", "refresh_token");
+        params.put("refresh_token", getRefreshToken());
+        params.put("scope", getScope());
+        params.put("redirect_uri", getRedirectUri());
 
-            getRestClient().jsonRequest(
-                    "/session/refresh/",
-                    Request.Method.POST,
-                    url,
-                    params,
-                    getHeaders(),
-                    new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            accessToken = response.optString("access_token");
-                            setExpiresIn(response.optInt("expires_in"));
+        getRestClient().stringRequest(
+                "/session/refresh/",
+                Request.Method.POST,
+                url,
+                params,
+                getHeaders(),
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        JSONObject jsonResponse = null;
+                        try {
+                            jsonResponse = new JSONObject(response);
+                            accessToken = jsonResponse.optString("access_token");
+                            setExpiresIn(jsonResponse.optInt("expires_in"));
                             success.onResponse("OK");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            //failure(e);
                         }
-                    }, failure);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+                    }
+                }, failure);
     }
 
     /**
@@ -303,27 +306,30 @@ public class AuthSession implements Session {
                     // Prepare URL
                     String url = API_SERVER + "/oauth/v2/token";
                     // Prepare params in body request
-                    JSONObject params = new JSONObject();
-                    try {
-                        params.put("grant_type", "authorization_code");
-                        params.put("code", data.getStringExtra(AuthActivity.EXTRA_AUTHORIZATION_CODE));
-                        params.put("redirect_uri", redirectURI);
 
-                        getRestClient().jsonRequest(
-                                "/session/check/authorizationCode",
-                                Request.Method.POST,
-                                url,
-                                params,
-                                getHeaders(),
-                                new Response.Listener<JSONObject>() {
-                                    @Override
-                                    public void onResponse(JSONObject response) {
+                    Map<String, String> params = new HashMap<String, String>();
+                    params.put("grant_type", "authorization_code");
+                    params.put("code", data.getStringExtra(AuthActivity.EXTRA_AUTHORIZATION_CODE));
+                    params.put("redirect_uri", redirectURI);
+
+                    getRestClient().stringRequest(
+                            "/session/check/authorizationCode",
+                            Request.Method.POST,
+                            url,
+                            params,
+                            getHeaders(),
+                            new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+                                    JSONObject jsonResponse = null;
+                                    try {
+                                        jsonResponse = new JSONObject(response);
                                         // save values :
-                                        accessToken = response.optString("access_token");
+                                        accessToken = jsonResponse.optString("access_token");
 
-                                        setExpiresIn(response.optInt("expires_in"));
+                                        setExpiresIn(jsonResponse.optInt("expires_in"));
 
-                                        setRefreshToken(response.optString("refresh_token"));
+                                        setRefreshToken(jsonResponse.optString("refresh_token"));
 
                                         // Check that authent is success !
                                         SharedPreferences sharedPref = context.getSharedPreferences(SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE);
@@ -332,12 +338,13 @@ public class AuthSession implements Session {
                                         editor.commit();
 
                                         success.onResponse("OK");
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                        //failure(e);
                                     }
-                                }, failure);
+                                }
+                            }, failure);
 
-                    } catch (JSONException e) {
-                        failure.onErrorResponse(new OrangeAPIException());
-                    }
                 }
             }
         } else {

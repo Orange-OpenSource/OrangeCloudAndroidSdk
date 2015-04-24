@@ -59,7 +59,7 @@ public final class OrangeCloudAPI<SESS_T extends Session> {
     /**
      * The version of this Dropbox SDK.
      */
-    public static final String SDK_VERSION = "1.0";
+    public static final String SDK_VERSION = "1.0.1";
 
     /**
      * Create an instance of Orange Cloud Api
@@ -122,8 +122,8 @@ public final class OrangeCloudAPI<SESS_T extends Session> {
         public String downloadURL;
 
         /** The URL to download a graphical representation suitable to be displayed in full screen
-          * on a mobile device, only available for some file type (photo, pdf, ...)
-          */
+         * on a mobile device, only available for some file type (photo, pdf, ...)
+         */
         public String previewURL;
 
         /** The URL to download the file itself, only available for plain files */
@@ -347,9 +347,9 @@ public final class OrangeCloudAPI<SESS_T extends Session> {
      * @param failure callback when error occurred
      */
     public void createFolder(final Entry entry,
-                          final String name,
-                          final OrangeListener.Success<Entry> success,
-                          final OrangeListener.Error failure) {
+                             final String name,
+                             final OrangeListener.Success<Entry> success,
+                             final OrangeListener.Error failure) {
 
         if (name == null || name.length() == 0) {
             throw new IllegalArgumentException("name must not be null or empty.");
@@ -541,10 +541,10 @@ public final class OrangeCloudAPI<SESS_T extends Session> {
      * @param entry the entry metadata. Must be a file.
      * @param success callback returning a Bitmap
      * @param failure callback when error occurred
-    */
+     */
     public void preview(final Entry entry,
-                          final OrangeListener.Success<Bitmap> success,
-                          final OrangeListener.Error failure) {
+                        final OrangeListener.Success<Bitmap> success,
+                        final OrangeListener.Error failure) {
 
         if (entry == null) {
             throw new IllegalArgumentException("entry must not be null.");
@@ -706,7 +706,7 @@ public final class OrangeCloudAPI<SESS_T extends Session> {
      * @param failure callback when error occurred
      */
     private void checkCloudEsid(final OrangeListener.Success<String> success,
-                                   final OrangeListener.Error failure) {
+                                final OrangeListener.Error failure) {
         Date now = new Date();
         if (mEsid == null || mEsidExpires == null || now.getTime() >= mEsidExpires.getTime()) {
             openSession(success, failure);
@@ -724,7 +724,7 @@ public final class OrangeCloudAPI<SESS_T extends Session> {
      * @param failure callback when a problem occurred
      */
     protected void openSession(final OrangeListener.Success<String> success,
-                             final OrangeListener.Error failure) {
+                               final OrangeListener.Error failure) {
 
         // Create Tag used to cancel the request
         final String tag = "Cloud/session/open/";

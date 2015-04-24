@@ -113,7 +113,7 @@ public class RestUtils {
     public void stringRequest(final String tag,
                               final int method,
                               final String url,
-                              final JSONObject params,
+                              final Map<String,String> params,
                               final Map<String, String> headers,
                               final Response.Listener<String> success,
                               final OrangeListener.Error failure) {
@@ -125,6 +125,10 @@ public class RestUtils {
                         failure.onErrorResponse(new CloudAPIException(error));
                     }
                 }) {
+            @Override
+            protected Map<String,String> getParams(){
+                return params;
+            }
 
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {

@@ -8,7 +8,7 @@ First,  you have to **register your app** on the [Orange developer portal](http:
 Sample app 
 ----------------
 Sample app is a very basic Android app that authenticates and then offers basic actions (browse, delete, create folders and upload files). 
-You can import sample project into **Android Studio** by clicking in **File â†’ Import Projects...** and select Sample directory.
+You can import sample project into **Android Studio** by clicking in **File > Import Projects...** and select Sample directory.
 
 You'll need to edit the code to enter your app key, your app secret and redirect uri where indicated in the MainActivity.java file.
 
@@ -22,8 +22,8 @@ Adding to existing projects
 --------------------------------------
 In Android Studio, you need to import the CloudSDK Android module inside your project: 
 
-1. go to **File â†’ Import Modules...** and select **CloudSDK** directory. 
-2. Go to **File â†’ Project Structure...** 
+1. go to **File > Import Modules...** and select **CloudSDK** directory. 
+2. Go to **File > Project Structure...** 
 3. Select your app module
 3. Select the **Dependencies** tab on the right
 4. Click the **+** icon on the bottom
