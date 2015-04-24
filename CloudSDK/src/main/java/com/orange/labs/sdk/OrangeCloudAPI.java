@@ -25,6 +25,7 @@ package com.orange.labs.sdk;
 
 import android.graphics.Bitmap;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.android.volley.Request.Method;
 import com.android.volley.Response;
@@ -204,7 +205,7 @@ public final class OrangeCloudAPI<SESS_T extends Session> {
         public void setExtraInfos(JSONObject info) {
 
             bytes = info.optLong("size");
-            size = humanReadableByteCount(bytes, true);
+            size = humanReadableByteCount(bytes, false);
 
             downloadURL = info.optString("downloadUrl");
             previewURL = info.optString("previewUrl");

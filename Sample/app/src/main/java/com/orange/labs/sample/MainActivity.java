@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.orange.labs.sample.cache.LruBitmapCache;
 import com.orange.labs.sample.entry.EntryAdapter;
@@ -46,6 +47,7 @@ public class MainActivity extends ActionBarActivity implements SwipeRefreshLayou
     final static private String APP_KEY = "your_app_key_here";
     final static private String APP_SECRET = "your_app_secret_key_here";
     final static private String APP_REDIRECT_URI = "your_redirect_uri_here";
+
 
     ///////////////////////////////////////////////////////////////////////////
     //                      End app-specific settings.                       //
@@ -198,10 +200,14 @@ public class MainActivity extends ActionBarActivity implements SwipeRefreshLayou
         } else if (id == R.id.menu_add_folder) {
             createFolder();
             return true;
-        }else if (id == R.id.menu_add_file) {
+        } else if (id == R.id.menu_add_file) {
             uploadFile();
             return true;
+        } else if (id == R.id.menu_freespace) {
+            freespace();
+            return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -245,6 +251,33 @@ public class MainActivity extends ActionBarActivity implements SwipeRefreshLayou
             }
         });
         alert.show();
+    }
+
+    /**
+     * Method to display freespace
+     */
+    public void freespace() {
+        mApi.freespace(new OrangeListener.Success<Long>() {
+            @Override
+            public void onResponse(Long response) {
+                String freespace = humanReadableByteCount(response, false);
+                String msg = getApplicationContext().getString(R.string.available_freespace) + freespace;
+                Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+            }
+        }, new OrangeListener.Error() {
+            @Override
+            public void onErrorResponse(OrangeAPIException error) {
+                failure(error, false);
+            }
+        });
+    }
+
+    private  String humanReadableByteCount(long bytes, boolean si) {
+        int unit = si ? 1000 : 1024;
+        if (bytes < unit) return bytes + " B";
+        int exp = (int) (Math.log(bytes) / Math.log(unit));
+        String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? "" : "i");
+        return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
     }
 
     /**
