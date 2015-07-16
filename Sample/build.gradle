@@ -5,7 +5,7 @@ android {
     buildToolsVersion '22.0.1'
 
     defaultConfig {
-        minSdkVersion 8
+        minSdkVersion 12
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
@@ -27,8 +27,4 @@ dependencies {
     compile 'com.android.support:support-v4:22.2.0'
     // Orange Cloud Android Sdk
     compile 'com.github.laurentsouchet-orange:orangecloudandroidsdk:1.0.1'
-
-    // For DateUtils
-    compile 'org.apache.httpcomponents:httpclient:4.3.5'
-
 }
