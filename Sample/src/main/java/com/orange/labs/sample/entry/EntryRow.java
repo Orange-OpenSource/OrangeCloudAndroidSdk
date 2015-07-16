@@ -37,11 +37,16 @@ import com.orange.labs.sdk.OrangeListener;
 import com.orange.labs.sdk.exception.OrangeAPIException;
 import com.orange.labs.sdk.session.AuthSession;
 
-import org.apache.http.impl.cookie.DateUtils;
+import java.text.Format;
+import java.text.SimpleDateFormat;
+
+//import org.apache.http.impl.cookie.DateUtils;
 
 public class EntryRow extends RelativeLayout {
 
     private OrangeCloudAPI<AuthSession> mApi;
+
+    private final static String PATTERN_ASCTIME = "EEE MMM d HH:mm:ss yyyy";
 
     // UI
     private TextView mTitleView;
@@ -126,7 +131,8 @@ public class EntryRow extends RelativeLayout {
     public void setExtraInfo(final OrangeCloudAPI.Entry entry) {
 
         // Add Date
-        String creationDate = DateUtils.formatDate(entry.creationDate, DateUtils.PATTERN_ASCTIME);
+        Format formatter = new SimpleDateFormat(PATTERN_ASCTIME);
+        String creationDate = formatter.format(entry.creationDate);
         mDateView.setText(creationDate);
 
         // Add size
