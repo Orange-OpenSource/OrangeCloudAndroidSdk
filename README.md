@@ -1,11 +1,31 @@
-# android-example
+Orange Cloud SDK for Android
+=========================
 
-[![Release](https://img.shields.io/github/release/jitpack/android-example.svg?label=maven version)](https://jitpack.io/#jitpack/android-example)
+Orange API : Register your app
+-------------------------------------------
 
-Example Android library project that works with jitpack.io. The 
-See also the guide for [building Android projects](https://github.com/jitpack/jitpack.io/blob/master/ANDROID.md)
+At this time, the downloadable projects are designed for use with Gradle and Android Studio. If you haven't already, first follow the steps at [Google's Android Studio installation guide](http://developer.android.com/sdk/installing/index.html?pkg=studio).
 
-https://jitpack.io/#jitpack/android-example/1.0.2
+First,  you have to **register your app** on the [Orange developer portal](http://api.orange.com) in order to get needed informations to identify your app (App Key, app Secret, redirect uri...).
+
+
+Sample app 
+----------------
+Sample app is a very basic Android app that authenticates and then offers basic actions (browse, delete, create folders and upload files). 
+
+You'll need to edit the code to enter your app key, your app secret and redirect uri where indicated in the *MainActivity.java* file.
+
+Then start app.
+
+```Java
+final static private String APP_KEY = "your client app key";
+final static private String APP_SECRET = "your client app secret";
+final static private String APP_REDIRECT_URI = "your client redirect uri";
+```
+
+Adding to existing projects
+--------------------------------------
+We use JitPack.io to deliver an Android library for [Orange Cloud Sdk Android](https://jitpack.io/#LaurentSouchet-Orange/OrangeCloudAndroidSdk)
 
 Add it to your build.gradle with:
 ```gradle
@@ -18,70 +38,10 @@ and:
 
 ```gradle
 dependencies {
-    compile 'com.github.jitpack:android-example:1.0.2'
+    // Orange Cloud Android Sdk
+    compile 'com.github.laurentsouchet-orange:orangecloudandroidsdk:1.0.1'
 }
 ```
-
-## Multiple build variants
-
-If your library uses multiple flavours then see this example:
-https://github.com/jitpack-io/android-jitpack-library-example
-
-## Adding the maven plugin
-
-To enable installing into local maven repository and JitPack you need to add the [android-maven](https://github.com/dcendents/android-maven-plugin) plugin:
-
-1. Add `classpath 'com.github.dcendents:android-maven-gradle-plugin:1.3'` to root build.gradle under `buildscript { dependencies {`
-2. Add `com.github.dcendents.android-maven` to the library/build.gradle
-
-After these changes you should be able to run:
-
-    ./gradlew install
-    
-from the root of your project. If install works and you have added a GitHub release it should work on jitpack.io
-
-## Adding a sample app 
-
-If you add a sample app to the same repo then your app needs to have a dependency on the library. To do this in your app/build.gradle add:
-
-```gradle
-    dependencies {
-        compile project(':library')
-    }
-```
-
-
-Orange Cloud SDK for Android
-=========================
-
-At this time, the downloadable projects are designed for use with Gradle and Android Studio. If you haven't already, first follow the steps at [Google's Android Studio installation guide](http://developer.android.com/sdk/installing/index.html?pkg=studio).
-
-First,  you have to **register your app** on the [Orange developer portal](http://api.orange.com) in order to get needed informations to identify your app (App Key, app Secret, redirect uri...).
-
-Sample app 
-----------------
-Sample app is a very basic Android app that authenticates and then offers basic actions (browse, delete, create folders and upload files). 
-You can import sample project into **Android Studio** by clicking in **File > Import Projects...** and select Sample directory.
-
-You'll need to edit the code to enter your app key, your app secret and redirect uri where indicated in the MainActivity.java file.
-
-```Java
-final static private String APP_KEY = "your client app key";
-final static private String APP_SECRET = "your client app secret";
-final static private String APP_REDIRECT_URI = "your client redirect uri";
-```
-
-Adding to existing projects
---------------------------------------
-In Android Studio, you need to import the CloudSDK Android module inside your project: 
-
-1. go to **File > Import Modules...** and select **CloudSDK** directory. 
-2. Go to **File > Project Structure...** 
-3. Select your app module
-3. Select the **Dependencies** tab on the right
-4. Click the **+** icon on the bottom
-5. Select **Module Dependency**
-6. Select **CloudSDK** module
 
 Authenticating your app
 ----------------------------------
