@@ -1,9 +1,32 @@
 Orange Cloud SDK for Android
-=========================
+============================
 
+Orange API : Register your app
+------------------------------
 At this time, the downloadable projects are designed for use with Gradle and Android Studio. If you haven't already, first follow the steps at [Google's Android Studio installation guide](http://developer.android.com/sdk/installing/index.html?pkg=studio).
 
 First,  you have to **register your app** on the [Orange developer portal](http://api.orange.com) in order to get needed informations to identify your app (App Key, app Secret, redirect uri...).
+
+Adding SDK to existing projects with JitPack.io
+-----------------------------------------------
+We use JitPack.io to deliver an Android library for [Orange Cloud Sdk Android](https://jitpack.io/#Orange-OpenSource/OrangeCloudAndroidSdk/1.0.2)
+
+Add it to your build.gradle with:
+
+```gradle
+repositories {   
+    jcenter()
+    maven { url "https://jitpack.io" }
+}
+```
+and:
+
+```gradle
+dependencies {
+    // Orange Cloud Android Sdk
+    compile 'com.github.Orange-OpenSource:OrangeCloudAndroidSdk:1.0.2'
+}
+```
 
 Sample app 
 ----------------
@@ -18,17 +41,7 @@ final static private String APP_SECRET = "your client app secret";
 final static private String APP_REDIRECT_URI = "your client redirect uri";
 ```
 
-Adding to existing projects
---------------------------------------
-In Android Studio, you need to import the CloudSDK Android module inside your project: 
 
-1. go to **File > Import Modules...** and select **CloudSDK** directory. 
-2. Go to **File > Project Structure...** 
-3. Select your app module
-3. Select the **Dependencies** tab on the right
-4. Click the **+** icon on the bottom
-5. Select **Module Dependency**
-6. Select **CloudSDK** module
 
 Authenticating your app
 ----------------------------------
@@ -161,7 +174,7 @@ Upload a File
 **/!\\** This function has to be called as a background task, for example an AsyncTask or maybe an IntentService.
 
 ```Java
-mApi.upload(sourceFile, aFolderEntry, new OrangeListener.Success<JSONObject>() {
+mApi.upload(fileUri, filename, entryToUpload, new OrangeListener.Success<JSONObject>() {
 	@Override
 	public void onResponse(JSONObject response) {
 		// File has been uploaded
@@ -240,3 +253,4 @@ mApi = new OrangeCloudAPI<AuthSession>(session);
 // An you can set a Image cache policy
 mApi.setImageCache(new LruBitmapCache());
 ```
+ No newline at end of file
