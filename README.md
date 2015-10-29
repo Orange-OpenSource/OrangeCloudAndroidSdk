@@ -24,7 +24,7 @@ and:
 ```gradle
 dependencies {
     // Orange Cloud Android Sdk
-    compile 'com.github.Orange-OpenSource:OrangeCloudAndroidSdk:1.0.2'
+    compile 'com.github.Orange-OpenSource:OrangeCloudAndroidSdk:1.0.+'
 }
 ```
 
