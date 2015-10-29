@@ -24,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.orange.labs.sample.cache.LruBitmapCache;
 import com.orange.labs.sample.entry.EntryAdapter;
@@ -117,6 +118,10 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             // An you can set a Image cache policy
             mApi.setImageCache(new LruBitmapCache());
 
+            // Add scope for example cloudfullread
+            // (see https://www.orangepartner.com/content/api-reference-cloud)
+            //mApi.addScope("cloudfullread");
+
             // Start session
             session.startAuthentication();
         } else {
@@ -196,6 +201,9 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             return true;
         } else if (id == R.id.menu_add_file) {
             uploadFile();
+            return true;
+        }else if (id == R.id.menu_freespace) {
+            freespace();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -455,5 +463,32 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         mainStateNonce = null;
         mApi.unlink();
         session.startAuthentication();
+    }
+
+    /**
+     * Method to display freespace
+     */
+    public void freespace() {
+        mApi.freespace(new OrangeListener.Success<Long>() {
+            @Override
+            public void onResponse(Long response) {
+                String freespace = humanReadableByteCount(response, false);
+                String msg = getApplicationContext().getString(R.string.available_freespace) + freespace;
+                Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+            }
+        }, new OrangeListener.Error() {
+            @Override
+            public void onErrorResponse(OrangeAPIException error) {
+                failure(error, false);
+            }
+        });
+    }
+
+    private  String humanReadableByteCount(long bytes, boolean si) {
+        int unit = si ? 1000 : 1024;
+        if (bytes < unit) return bytes + " B";
+        int exp = (int) (Math.log(bytes) / Math.log(unit));
+        String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? "" : "i");
+        return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
     }
 }

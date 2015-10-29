@@ -12,6 +12,10 @@
     <string name="alert_add_folder_button_ok">Create</string>
     <string name="alert_add_folder_button_cancel">Cancel</string>
 
+    <!-- FreeSpace-->
+    <string name="action_freespace">Freespace</string>
+    <string name="available_freespace">Available freespace: </string>
+
     <!-- Upload File -->
     <string name="action_add_file">Upload image</string>
     <string name="upload_file_title">Select an image</string>

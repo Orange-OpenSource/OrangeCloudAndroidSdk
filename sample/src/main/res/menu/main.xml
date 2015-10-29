@@ -8,6 +8,9 @@
         android:id="@+id/menu_add_file"
         android:title="@string/action_add_file" />
     <item
+        android:id="@+id/menu_freespace"
+        android:title="@string/action_freespace" />
+    <item
         android:id="@+id/action_logout"
         android:title="@string/action_logout" />
 </menu>

@@ -80,9 +80,11 @@ AuthSession session = new AuthSession(Activity.this, APP_KEY, APP_SECRET, APP_RE
 mApi = new OrangeCloudAPI<AuthSession>(session);
 ```
 Now,  you can start authentication process. If it is the first connection for Orange user, method opens the **AuthActivity** declared in **AndroidManifest.xml** in order to authenticate user and authorize the access of Orange Cloud service.
+
 ```Java
 mApi.getSession().startAuthentication();
 ```
+
 Upon authentication, users are returned your own Activity.java. To finish authentication after the user returns to your app, you have to put the following code in your **onResume** function.
 ```Java
 @Override
@@ -104,6 +106,20 @@ protected void onResume() {
 	});
 }
 ```
+
+Add scopes
+----------
+
+Before to call `mApi.getSession().startAuthentication();`, you can add new scopes. For example, if you have access to Cloud Full Read API (see documentation on [Cloud Api Reference](https://www.orangepartner.com/content/api-reference-cloud)), you can add this scope like :
+
+```Java
+// Add scope "cloudfullread"
+mApi.addScope("cloudfullread");
+
+// Start session
+session.startAuthentication();
+``` 
+
 
 Listing folders
 --------------------

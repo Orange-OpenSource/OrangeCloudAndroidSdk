@@ -87,6 +87,20 @@ public final class OrangeCloudAPI<SESS_T extends Session> {
     }
 
     /**
+     * Add additional scope to OpenIDConnect.
+     * To be called before session.startAuthentication();
+     * For example, if you have right, you can add cloudfullread
+     * to have a full access to the Orange cloud.
+     *
+     * @param scope OIDC scope to add.
+     */
+    public void addScope(String scope) {
+        if (scope != null && scope.length() > 0) {
+            session.addScope(scope.trim());
+        }
+    }
+
+    /**
      * @return the current session
      */
     public SESS_T getSession() {
