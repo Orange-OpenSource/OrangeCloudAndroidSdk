@@ -9,7 +9,7 @@ First,  you have to **register your app** on the [Orange developer portal](http:
 
 Adding SDK to existing projects with JitPack.io
 -----------------------------------------------
-We use JitPack.io to deliver an Android library for [Orange Cloud Sdk Android](https://jitpack.io/#Orange-OpenSource/OrangeCloudAndroidSdk/1.0.2)
+We use JitPack.io to deliver an Android library for [Orange Cloud Sdk Android](https://jitpack.io/#Orange-OpenSource/OrangeCloudAndroidSdk/1.0.4)
 
 Add it to your build.gradle with:
 
@@ -24,7 +24,7 @@ and:
 ```gradle
 dependencies {
     // Orange Cloud Android Sdk
-    compile 'com.github.Orange-OpenSource:OrangeCloudAndroidSdk:1.0.+'
+    compile 'com.github.Orange-OpenSource:OrangeCloudAndroidSdk:1.0.4'
 }
 ```
 

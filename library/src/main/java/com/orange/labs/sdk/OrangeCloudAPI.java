@@ -58,7 +58,7 @@ public final class OrangeCloudAPI<SESS_T extends Session> {
     /**
      * The version of this Orange SDK.
      */
-    public static final String SDK_VERSION = "1.0.2";
+    public static final String SDK_VERSION = "1.0.4";
     // Server information
     private static String API_URL = "https://api.orange.com/cloud/";
     private static String API_CONTENT_URL = "https://cloudapi.orange.com/cloud/";
@@ -401,7 +401,7 @@ public final class OrangeCloudAPI<SESS_T extends Session> {
         }
 
         final String tag = "Cloud/preview/" + entry.identifier;
-        final String url = entry.thumbnailURL;
+        final String url = entry.previewURL;
 
         session.getRestClient().imageRequest(tag, url, getHeaders(),
                 success,
@@ -411,7 +411,7 @@ public final class OrangeCloudAPI<SESS_T extends Session> {
                         checkSession(error, new OrangeListener.Success<String>() {
                             @Override
                             public void onResponse(String response) {
-                                thumbnail(entry, success, failure);
+                                preview(entry, success, failure);
                             }
                         }, failure);
                     }

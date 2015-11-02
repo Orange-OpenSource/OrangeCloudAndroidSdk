@@ -8,8 +8,8 @@ android {
         applicationId "com.orange.labs.sample"
         minSdkVersion 12
         targetSdkVersion 23
-        versionCode 1
-        versionName "1.0.1"
+        versionCode 4
+        versionName "1.0.4"
     }
     buildTypes {
         release {

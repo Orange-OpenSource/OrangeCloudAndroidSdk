@@ -381,7 +381,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
      */
     public void previewImage(final OrangeCloudAPI.Entry entry) {
         progressBar.setVisibility(View.VISIBLE);
-        mApi.imageContent(entry, new OrangeListener.Success<Bitmap>() {
+        mApi.preview(entry, new OrangeListener.Success<Bitmap>() {
             @Override
             public void onResponse(Bitmap response) {
                 progressBar.setVisibility(View.GONE);
