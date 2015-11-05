@@ -34,6 +34,8 @@ import com.orange.labs.sdk.exception.OrangeAPIException;
 import com.orange.labs.sdk.session.AuthSession;
 
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 /**
  * This activity is used internally for authentication. It opens a web view with
@@ -104,18 +106,22 @@ public class AuthActivity extends Activity {
     private void startWebAuth() {
         String path = "/oauth/v2/authorize";
 
-        String url = AuthSession.API_SERVER
-                + path
-                + "?scope=" + appScope
-                + "&response_type=code"
-                + "&client_id=" + appKey
-                + "&state=state"
-                + "&redirect_uri=" + appRedirectURI;
-
-        if (appForceLogin) {
-            url += "&prompt=login%20consent";
+        String url = null;
+        try {
+            url = AuthSession.API_SERVER
+                    + path
+                    + "?scope=" + appScope.replace(" ", "%20")
+                    + "&response_type=code"
+                    + "&client_id=" + appKey
+                    + "&state=state"
+                    + "&redirect_uri=" + URLEncoder.encode(appRedirectURI, "UTF-8");
+            if (appForceLogin) {
+                url += "&prompt=login%20consent";
+            }
+            mWebView.loadUrl(url);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
         }
-        mWebView.loadUrl(url);
     }
 
     private void finishWebAuth(String authorizationCode) {
