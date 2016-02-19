@@ -42,36 +42,13 @@ public class CloudAPIException extends OrangeAPIException {
         super(statusCode, code, message, description);
     }
 
-    public CloudAPIException(int statusCode, JSONObject errorJson) {
-        super();
-        this.statusCode = statusCode;
-        errorJson = errorJson.optJSONObject("error");
-        if (errorJson != null) {
-            this.code = errorJson.optString("code");
-
-            this.message = errorJson.optString("message");
-            if (TextUtils.isEmpty(this.message)) {
-                this.message = errorJson.optString("label");
-            }
-            this.description = errorJson.optString("description");
-            if (TextUtils.isEmpty(this.description)) {
-                this.description = errorJson.optString("details");
-            }
-
-        } else {
-            this.message = "";
-            this.description = "";
-            this.code = "";
-        }
-    }
-
-    public CloudAPIException(VolleyError error) {
-        super(error);
+    public CloudAPIException(Throwable throwable) {
+        super(throwable);
         try {
+            VolleyError error = (VolleyError)throwable;
             if (error != null && error.networkResponse != null) {
                 this.statusCode = error.networkResponse.statusCode;
                 String str = new String(error.networkResponse.data, "UTF-8");
-                Log.v("CloudAPIException", str);
                 JSONObject errorJson = new JSONObject(str);
                 if (errorJson != null) {
                     JSONObject errorJsonLv1 = errorJson.optJSONObject("error");
@@ -106,14 +83,33 @@ public class CloudAPIException extends OrangeAPIException {
                             }
                         }
                     }
-                } else {
-                    this.message = "";
-                    this.description = str;
-                    this.code = "";
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public CloudAPIException(int statusCode, JSONObject errorJson) {
+        super();
+        this.statusCode = statusCode;
+        errorJson = errorJson.optJSONObject("error");
+        if (errorJson != null) {
+            this.code = errorJson.optString("code");
+
+            this.message = errorJson.optString("message");
+            if (TextUtils.isEmpty(this.message)) {
+                this.message = errorJson.optString("label");
+            }
+            this.description = errorJson.optString("description");
+            if (TextUtils.isEmpty(this.description)) {
+                this.description = errorJson.optString("details");
+            }
+
+        } else {
+            this.message = "";
+            this.description = "";
+            this.code = "";
         }
     }
 }

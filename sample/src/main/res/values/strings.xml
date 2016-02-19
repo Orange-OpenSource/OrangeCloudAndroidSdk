@@ -1,37 +1,57 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">Orange Cloud SDK</string>
 
-    <string name="app_name">Sample</string>
-    <!-- Menu Strings -->
+    <!-- Drawer layout menu -->
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <!-- Logout Action -->
-    <string name="action_logout">Logout</string>
+    <string name="nav_folders">My Cloud</string>
+    <string name="nav_freespace">Freespace</string>
+    <string name="nav_logout">Logout</string>
 
-    <!-- Create Folder Action -->
-    <string name="action_add_folder">Create folder</string>
-    <string name="alert_add_folder_button_ok">Create</string>
-    <string name="alert_add_folder_button_cancel">Cancel</string>
-
-    <!-- FreeSpace-->
-    <string name="action_freespace">Freespace</string>
+    <!-- freespace -->
     <string name="available_freespace">Available freespace: </string>
 
-    <!-- Upload File -->
-    <string name="action_add_file">Upload image</string>
-    <string name="upload_file_title">Select an image</string>
-    <string name="upload_file_success">"Image successfully uploaded"</string>
-    <string name="upload_image_title">""Uploading "</string>
-
-    <!-- Delete Action -->
+    <!-- Context menu -->
+    <string name="action_rename">Rename</string>
+    <string name="action_copy">Copy</string>
+    <string name="action_move">Move</string>
+    <string name="action_paste">Paste</string>
     <string name="action_delete">Delete</string>
+
+    <!-- Folder menu -->
+    <string name="action_add_folder">Create Folder</string>
+    <string name="action_upload">Upload</string>
+
+    <!-- Delete action -->
     <string name="alert_delete_title">Delete entry</string>
     <string name="alert_delete_message">Are you sure to delete this entry and its contents?</string>
     <string name="alert_delete_button_ok">Delete</string>
     <string name="alert_delete_button_cancel">Cancel</string>
 
+    <!-- Create Folder Action -->
+    <string name="alert_add_folder_button_ok">Create</string>
+    <string name="alert_add_folder_button_cancel">Cancel</string>
+
+    <!-- Upload File -->
+    <string name="action_add_file">Upload image</string>
+    <string name="upload_file_title">Select an image</string>
+    <string name="upload_file_success">"Image successfully uploaded"</string>
+    <string name="upload_file_error">"Error during upload"</string>
+    <string name="upload_image_title">""Uploading "</string>
+
+    <!-- Rename Action -->
+    <string name="alert_rename_folder_button_ok">Rename</string>
+    <string name="alert_rename_folder_button_cancel">Cancel</string>
+
     <!-- Others -->
     <string name="empty_list">No item</string>
     <string name="error">Error</string>
     <string name="ok">Ok</string>
+    <string name="cancel">Cancel</string>
 
+    <!-- Error API-->
+    <string name="FORBIDDEN_COPY_MOVE">You can copy or move existing contents in the same folder</string>
+    <string name="ALREADY_EXISTS">The folder already exits.</string>
+    <string name="NOT_FOUND">The folder does not exist.</string>
 </resources>

@@ -26,6 +26,7 @@ package com.orange.labs.sdk;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.android.volley.Request.Method;
 import com.android.volley.Response;
@@ -44,6 +45,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -58,12 +60,12 @@ public final class OrangeCloudAPI<SESS_T extends Session> {
     /**
      * The version of this Orange SDK.
      */
-    public static final String SDK_VERSION = "1.0.4";
+    public static final String SDK_VERSION = "1.0.6";
     // Server information
     private static String API_URL = "https://api.orange.com/cloud/";
     private static String API_CONTENT_URL = "https://cloudapi.orange.com/cloud/";
 
-    private static String API_VERSION = "v1";
+    private static String API_VERSION = "beta";
     // Parameters linked to OAuth
     private static String CLOUDAPI_DEFAULT_SCOPE = "cloud";
     // Internal
@@ -141,6 +143,7 @@ public final class OrangeCloudAPI<SESS_T extends Session> {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
+                        Log.v("response", response.toString());
                         long freeSpace = response.optLong("freespace");
                         success.onResponse(new Long(freeSpace));
                     }
@@ -167,7 +170,7 @@ public final class OrangeCloudAPI<SESS_T extends Session> {
      * @param success callback returning a Entry (folders and its contents)
      * @param failure callback when error occurred
      */
-
+    @Deprecated
     public void listFolder(final Entry entry,
                            final OrangeListener.Success<Entry> success,
                            final OrangeListener.Error failure) {
@@ -187,7 +190,6 @@ public final class OrangeCloudAPI<SESS_T extends Session> {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-
                         success.onResponse(new Entry(response));
                     }
                 }, new OrangeListener.Error() {
@@ -199,6 +201,65 @@ public final class OrangeCloudAPI<SESS_T extends Session> {
                             public void onResponse(String response) {
                                 // retry request
                                 listFolder(entry, success, failure);
+                            }
+                        }, failure);
+                    }
+                });
+    }
+
+    /**
+     * List the content of a entries function of parameters.
+     * see https://developer.orange.com/apis/cloud-france/api-reference
+     *
+     * @param entry         folder object to list. Can be null to get the root access.
+     * @param parameters    Add parameters (see documentation)
+     * @param success       callback returning a Entry (folders and its contents)
+     * @param failure       callback when error occurred
+     */
+
+    public void listEntries(final Entry entry,
+                           final JSONObject parameters,
+                           final OrangeListener.Success<Entry> success,
+                           final OrangeListener.Error failure) {
+
+        String entryIdentifier = "";
+        if (entry != null) {
+            entryIdentifier = entry.identifier;
+        }
+
+        // Create Tag used to cancel the request
+        final String tag = "Cloud/entries/list/" + entryIdentifier;
+
+        // Prepare URL
+        String url = API_URL + API_VERSION + "/folders/" + entryIdentifier;
+        if (parameters != null) {
+            try {
+                url += "?";
+                Iterator<String> keys = parameters.keys();
+                while (keys.hasNext()) {
+                    String key = keys.next();
+                    url += key + "=" + parameters.get(key) + "&";
+                }
+            } catch (JSONException e) {
+                // TODO:
+                e.printStackTrace();
+            }
+        }
+        session.getRestClient().jsonRequest(tag, Method.GET, url, null, getHeaders(),
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.v("listEntries", response.toString());
+                        success.onResponse(new Entry(response));
+                    }
+                }, new OrangeListener.Error() {
+                    @Override
+                    public void onErrorResponse(OrangeAPIException error) {
+                        checkSession(error, new OrangeListener.Success<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                // retry request
+                                listEntries(entry, parameters, success, failure);
                             }
                         }, failure);
                     }
@@ -257,6 +318,156 @@ public final class OrangeCloudAPI<SESS_T extends Session> {
             }
         });
     }
+
+    /**
+     * Rename an Entry (files or folders)
+     *
+     * @param entry   entry to rename
+     * @param name    new name of entry
+     * @param success callback when delete is completed
+     * @param failure callback when error occurred
+     */
+    public void rename(final Entry entry,
+                             final String name,
+                             final OrangeListener.Success<Entry> success,
+                             final OrangeListener.Error failure) {
+
+        if (name == null || name.length() == 0) {
+            throw new IllegalArgumentException("name must not be null or empty.");
+        }
+
+        // Create Tag used to cancel the request
+        final String tag = "Cloud/rename/" + name;
+
+        // Prepare params
+        final JSONObject params = new JSONObject();
+        try {
+            params.put("name", name);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        // Prepare URL
+        final String url = API_URL + API_VERSION
+                + ((entry.type == Entry.Type.DIRECTORY)
+                ? "/folders/"
+                : "/files/")
+                + entry.identifier;
+        session.getRestClient().jsonRequest(tag, Method.POST, url, params, getHeaders(), new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                success.onResponse(new Entry(response));
+            }
+        }, new OrangeListener.Error() {
+            @Override
+            public void onErrorResponse(OrangeAPIException error) {
+                checkSession(error, new OrangeListener.Success<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        rename(entry, name, success, failure);
+                    }
+                }, failure);
+            }
+        });
+    }
+
+    /**
+     * Copy an Entry (files or folders) in a new folder
+     *
+     * @param entry   entry to copy
+     * @param destination  the folder to copy
+     * @param success callback when delete is completed
+     * @param failure callback when error occurred
+     */
+    public void copy(final Entry entry,
+                     final Entry destination,
+                     final OrangeListener.Success<Entry> success,
+                     final OrangeListener.Error failure) {
+
+
+        // Create Tag used to cancel the request
+        final String tag = "Cloud/copy/" + entry.name;
+
+        // Prepare params
+        final JSONObject params = new JSONObject();
+        try {
+            params.put("parentFolderId", destination.identifier);
+            params.put("clone", true);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        // Prepare URL
+        final String url = API_URL + API_VERSION
+                + ((entry.type == Entry.Type.DIRECTORY)
+                ? "/folders/"
+                : "/files/")
+                + entry.identifier;
+        session.getRestClient().jsonRequest(tag, Method.POST, url, params, getHeaders(), new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                success.onResponse(new Entry(response));
+            }
+        }, new OrangeListener.Error() {
+            @Override
+            public void onErrorResponse(OrangeAPIException error) {
+                checkSession(error, new OrangeListener.Success<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        copy(entry, destination, success, failure);
+                    }
+                }, failure);
+            }
+        });
+    }
+
+    /**
+     * Move an Entry (files or folders) in a new folder
+     *
+     * @param entry   entry to copy
+     * @param destination  the folder to copy
+     * @param success callback when delete is completed
+     * @param failure callback when error occurred
+     */
+    public void move(final Entry entry,
+                     final Entry destination,
+                     final OrangeListener.Success<Entry> success,
+                     final OrangeListener.Error failure) {
+
+
+        // Create Tag used to cancel the request
+        final String tag = "Cloud/copy/" + entry.name;
+
+        // Prepare params
+        final JSONObject params = new JSONObject();
+        try {
+            params.put("parentFolderId", destination.identifier);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        // Prepare URL
+        final String url = API_URL + API_VERSION
+                + ((entry.type == Entry.Type.DIRECTORY)
+                ? "/folders/"
+                : "/files/")
+                + entry.identifier;
+        session.getRestClient().jsonRequest(tag, Method.POST, url, params, getHeaders(), new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                success.onResponse(new Entry(response));
+            }
+        }, new OrangeListener.Error() {
+            @Override
+            public void onErrorResponse(OrangeAPIException error) {
+                checkSession(error, new OrangeListener.Success<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        move(entry, destination, success, failure);
+                    }
+                }, failure);
+            }
+        });
+    }
+
 
     /**
      * Delete an Entry (files or folders)
@@ -365,7 +576,6 @@ public final class OrangeCloudAPI<SESS_T extends Session> {
 
         final String tag = "Cloud/thumbnail/" + entry.identifier;
         final String url = entry.thumbnailURL;
-
         session.getRestClient().imageRequest(tag, url, getHeaders(),
                 success,
                 new OrangeListener.Error() {
@@ -512,7 +722,7 @@ public final class OrangeCloudAPI<SESS_T extends Session> {
                               final OrangeListener.Error failure) {
 
         // Check error code to know if SESSION_EXPIRED
-        if (error.statusCode == 401) {
+        if (error.getStatusCode() == 401) {
             session.refresh(new OrangeListener.Success<String>() {
                 @Override
                 public void onResponse(String response) {
@@ -533,6 +743,7 @@ public final class OrangeCloudAPI<SESS_T extends Session> {
     private Map<String, String> getHeaders() {
         HashMap<String, String> headers = new HashMap<String, String>();
         headers.put("Authorization", "Bearer " + getSession().getAccessToken());
+        Log.v("headers", "Bearer " + getSession().getAccessToken());
         return headers;
     }
 
@@ -608,6 +819,11 @@ public final class OrangeCloudAPI<SESS_T extends Session> {
         public List<Entry> contents;
 
         /**
+         * Empty constructor
+         */
+        public Entry() {}
+
+        /**
          * Creates an entry from a json Object, usually received from the list folder or
          * an explicit file info on a file
          *
@@ -630,7 +846,13 @@ public final class OrangeCloudAPI<SESS_T extends Session> {
                 type = Type.IMAGE;
             } else if (entryType.equals("VIDEO")) {
                 type = Type.VIDEO;
+            } else if (entryType.equals("MUSIC")) {
+                type = Type.MUSIC;
             }
+
+            downloadURL = jsonObject.optString("downloadUrl");
+            previewURL = jsonObject.optString("previewUrl");
+            thumbnailURL = jsonObject.optString("thumbUrl");
 
             // If it is folder check if directory contains sub folders and files.
             if (this.type == Type.DIRECTORY) {
@@ -696,7 +918,7 @@ public final class OrangeCloudAPI<SESS_T extends Session> {
          * List of available item types
          */
         public static enum Type {
-            IMAGE, FILE, VIDEO, DIRECTORY
+            IMAGE, FILE, VIDEO, MUSIC, DIRECTORY
         }
     }
 }

@@ -32,15 +32,11 @@ import android.os.AsyncTask;
 import android.provider.OpenableColumns;
 import android.widget.Toast;
 
-import com.android.volley.Response;
 import com.orange.labs.sdk.OrangeCloudAPI;
 import com.orange.labs.sdk.OrangeListener;
 import com.orange.labs.sdk.exception.OrangeAPIException;
 
 import org.json.JSONObject;
-
-import java.io.File;
-import java.util.Map;
 
 public class UploadPicture extends AsyncTask<Void, Integer, Boolean> {
 
@@ -48,14 +44,10 @@ public class UploadPicture extends AsyncTask<Void, Integer, Boolean> {
     private OrangeCloudAPI.Entry mEntry;
     private Uri mUri;
 
-    private boolean mresult;
+    private boolean mResult;
 
-    private long mFileLen;
-    //    private UploadRequest mRequest;
     private Context mContext;
     private final ProgressDialog mDialog;
-
-    private String mErrorMsg;
 
     public UploadPicture(Context context, OrangeCloudAPI<?> api, OrangeCloudAPI.Entry entry, Uri uri) {
         mContext = context;
@@ -82,7 +74,7 @@ public class UploadPicture extends AsyncTask<Void, Integer, Boolean> {
         mApi.upload(mUri, getFilename(), mEntry, new OrangeListener.Success<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                mresult = true;
+                mResult = true;
 
             }
         }, new OrangeListener.Progress() {
@@ -93,11 +85,10 @@ public class UploadPicture extends AsyncTask<Void, Integer, Boolean> {
         }, new OrangeListener.Error() {
             @Override
             public void onErrorResponse(OrangeAPIException error) {
-                mresult = false;
-                showToast(error.description);
+                mResult = false;
             }
         });
-        return mresult;
+        return mResult;
     }
 
     @Override
@@ -109,18 +100,17 @@ public class UploadPicture extends AsyncTask<Void, Integer, Boolean> {
     protected void onPostExecute(Boolean result) {
         mDialog.dismiss();
         if (result) {
-            showToast(mContext.getResources().getString(R.string.upload_file_success));
+            showToast(mContext.getString(R.string.upload_file_success));
             if (mContext != null) {
                 ((MainActivity)mContext).refreshData();
             }
         } else {
-            showToast(mErrorMsg);
+            showToast(mContext.getString(R.string.upload_file_error));
         }
     }
 
     private void showToast(String msg) {
-        Toast error = Toast.makeText(mContext, msg, Toast.LENGTH_LONG);
-        error.show();
+        Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
     }
 
     /**

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/ribbon_view"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="#fff"
+        android:orientation="horizontal"
+        android:gravity="center_vertical|right">
+
+        <Button
+            android:id="@+id/cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:background="#ccc"
+            android:text="@string/cancel"
+            android:textSize="14sp"
+            android:textColor="#fff"
+            android:layout_margin="8dp" />
+
+        <Button
+            android:id="@+id/paste"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:background="@color/colorAccent"
+            android:text="@string/action_paste"
+            android:textSize="14sp"
+            android:textColor="#fff"
+            android:layout_margin="8dp" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipe_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ListView
+                android:id="@+id/list_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </android.support.v4.widget.SwipeRefreshLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/empty_list"
+            android:id="@+id/empty_text"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:visibility="gone"/>
+
+        <ProgressBar style="?android:attr/progressBarStyle"
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:indeterminateOnly="false"
+            android:indeterminate="true" />
+    </RelativeLayout>
+</LinearLayout>

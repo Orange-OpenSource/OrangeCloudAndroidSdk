@@ -31,9 +31,11 @@ import android.view.Display;
 import android.view.WindowManager;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -55,6 +57,9 @@ import java.util.Map;
 import javax.net.ssl.HttpsURLConnection;
 
 public class RestUtils {
+
+    private static int TIMEOUT = 5000;
+    private static String TAG = RestUtils.class.toString();
 
     private RequestQueue mRequestQueue;
     private ImageLoader.ImageCache mImageCache;
@@ -85,7 +90,7 @@ public class RestUtils {
                             final Map<String, String> headers,
                             final Response.Listener<JSONObject> success,
                             final OrangeListener.Error failure) {
-
+        Log.v(TAG, "jsonRequest: " + url);
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(method, url, params, success,
                 new Response.ErrorListener() {
                     @Override
@@ -99,6 +104,11 @@ public class RestUtils {
                 return headers;
             }
         };
+        jsonObjReq.setRetryPolicy(new DefaultRetryPolicy(
+                TIMEOUT,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
         jsonObjReq.setTag(tag);
         mRequestQueue.add(jsonObjReq);
     }
@@ -111,8 +121,8 @@ public class RestUtils {
                               final Map<String, String> headers,
                               final Response.Listener<String> success,
                               final OrangeListener.Error failure) {
-
-        StringRequest jsonObjReq = new StringRequest(method, url, success,
+        Log.v(TAG, "stringRequest: " + url);
+        StringRequest stringReq = new StringRequest(method, url, success,
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
@@ -129,8 +139,12 @@ public class RestUtils {
                 return headers;
             }
         };
-        jsonObjReq.setTag(tag);
-        mRequestQueue.add(jsonObjReq);
+        stringReq.setRetryPolicy(new DefaultRetryPolicy(
+                TIMEOUT,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        stringReq.setTag(tag);
+        mRequestQueue.add(stringReq);
     }
 
     public void imageRequest(final String tag,
@@ -148,7 +162,7 @@ public class RestUtils {
                 return;
             }
         }
-
+        Log.v(TAG, "imageRequest: " + url);
         ImageRequest request = new ImageRequest(url,
                 new Response.Listener<Bitmap>() {
                     @Override
@@ -170,6 +184,10 @@ public class RestUtils {
             }
         };
         // Adding request to request queue
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                TIMEOUT,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         request.setTag(tag);
         mRequestQueue.add(request);
     }
@@ -183,8 +201,8 @@ public class RestUtils {
 
 
         try {
+            Log.v(TAG, "uploadRequest: " + url);
             FileInputStream fileInputStream = (FileInputStream) mContext.getContentResolver().openInputStream(fileUri);
-            int mSizeFile = (int) fileInputStream.getChannel().size();
 
             // Open a HTTP connection to the URL
             HttpURLConnection conn = (HttpsURLConnection) url.openConnection();

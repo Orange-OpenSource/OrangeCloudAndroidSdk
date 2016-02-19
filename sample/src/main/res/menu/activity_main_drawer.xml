@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_folders"
+            android:icon="@mipmap/folder"
+            android:title="@string/nav_folders" />
+    </group>
+    <group android:menuCategory="secondary" android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_freespace"
+            android:icon="@mipmap/freespace"
+            android:title="@string/nav_freespace" />
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@mipmap/logout"
+            android:title="@string/nav_logout" />
+    </group>
+
+</menu>
