@@ -33,7 +33,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Editable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -50,7 +49,6 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.orange.labs.sample.CloudContextMenu;
 import com.orange.labs.sample.MainActivity;
 import com.orange.labs.sample.R;
 import com.orange.labs.sample.adapter.EntryListAdapter;
@@ -68,7 +66,7 @@ public class FolderFragment extends Fragment
         implements SwipeRefreshLayout.OnRefreshListener,
         OrangeListener.Error {
 
-    private static List<String> breadcrumbs = new ArrayList<>();
+    public static List<String> breadcrumbs = new ArrayList<>();
 
     public enum ActionType {
         NONE, COPY, MOVE
@@ -121,15 +119,8 @@ public class FolderFragment extends Fragment
         mAdapter.setMoreInfoClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //getActivity().openContextMenu(v);
+                getActivity().openContextMenu(v);
 
-                int position = mListView.getPositionForView(v);
-                OrangeCloudAPI.Entry entry = mAdapter.getItem(position);
-
-                if (entry != null) {
-                    CloudContextMenu contextMenu = new CloudContextMenu(getContext(), entry, mApi);
-                    contextMenu.show();
-                }
             }
         });
 
@@ -141,7 +132,6 @@ public class FolderFragment extends Fragment
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.v("VIEW", view.toString());
                 if (mListener != null) {
                     // Get element at position and browse if it is a folder
                     OrangeCloudAPI.Entry entry = mAdapter.getItem(position);
@@ -157,11 +147,6 @@ public class FolderFragment extends Fragment
         mProgressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
 
         mPasteViewContainer = (LinearLayout) view.findViewById(R.id.ribbon_view);
-        if (action == ActionType.NONE) {
-            mPasteViewContainer.setVisibility(View.GONE);
-        } else {
-            mPasteViewContainer.setVisibility(View.VISIBLE);
-        }
 
         mPasteButton = (Button) view.findViewById(R.id.paste);
         mPasteCancelButton = (Button) view.findViewById(R.id.cancel);
@@ -169,16 +154,12 @@ public class FolderFragment extends Fragment
         mPasteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*if (copiedEntry.parentIdentifier.equals(mEntry.identifier)) {
-                    OrangeAPIException exception = new OrangeAPIException(0, "", "FORBIDDEN_COPY_MOVE", "");
-                    onErrorResponse(exception);
-                } else {*/
                 if (action == ActionType.COPY) {
                     copy();
                 } else if (action == ActionType.MOVE) {
-                        move();
-                    }
-                /*}*/
+                    move();
+                }
+                action = ActionType.NONE;
             }
         });
 
@@ -190,6 +171,12 @@ public class FolderFragment extends Fragment
                 mPasteViewContainer.setVisibility(View.GONE);
             }
         });
+
+        if (action == ActionType.NONE) {
+            mPasteViewContainer.setVisibility(View.GONE);
+        } else {
+            mPasteViewContainer.setVisibility(View.VISIBLE);
+        }
 
         refreshData();
     }
@@ -342,7 +329,6 @@ public class FolderFragment extends Fragment
                     mApi.createFolder(mEntry, folderName, new OrangeListener.Success<OrangeCloudAPI.Entry>() {
                         @Override
                         public void onResponse(OrangeCloudAPI.Entry response) {
-                            mPasteViewContainer.setVisibility(View.GONE);
                             browseFolders(mEntry);
                         }
                     }, FolderFragment.this);
@@ -354,26 +340,28 @@ public class FolderFragment extends Fragment
     }
 
     /**
-     * Copy a folder of file in another folder
+     * Copy a folder or file in another folder
      */
     private void copy() {
+        mPasteViewContainer.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.VISIBLE);
         mApi.copy(copiedEntry, mEntry, new OrangeListener.Success<OrangeCloudAPI.Entry>() {
             @Override
             public void onResponse(OrangeCloudAPI.Entry response) {
-                mPasteViewContainer.setVisibility(View.GONE);
                 browseFolders(mEntry);
             }
         }, this);
     }
 
     /**
-     * Move a folder of file in another folder
+     * Move a folder or file in another folder
      */
     private void move() {
+        mPasteViewContainer.setVisibility(View.GONE);
+        mProgressBar.setVisibility(View.VISIBLE);
         mApi.move(copiedEntry, mEntry, new OrangeListener.Success<OrangeCloudAPI.Entry>() {
             @Override
             public void onResponse(OrangeCloudAPI.Entry response) {
-                mPasteViewContainer.setVisibility(View.GONE);
                 browseFolders(mEntry);
             }
         }, this);

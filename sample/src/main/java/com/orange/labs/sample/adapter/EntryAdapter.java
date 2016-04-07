@@ -63,8 +63,6 @@ public class EntryAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-
-
     public void setCloudApi(OrangeCloudAPI<AuthSession> api) {
         mApi = api;
     }

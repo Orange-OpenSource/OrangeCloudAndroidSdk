@@ -65,7 +65,7 @@ public final class OrangeCloudAPI<SESS_T extends Session> {
     private static String API_URL = "https://api.orange.com/cloud/";
     private static String API_CONTENT_URL = "https://cloudapi.orange.com/cloud/";
 
-    private static String API_VERSION = "beta";
+    private static String API_VERSION = "v1";
     // Parameters linked to OAuth
     private static String CLOUDAPI_DEFAULT_SCOPE = "cloud";
     // Internal
@@ -143,7 +143,6 @@ public final class OrangeCloudAPI<SESS_T extends Session> {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.v("response", response.toString());
                         long freeSpace = response.optLong("freespace");
                         success.onResponse(new Long(freeSpace));
                     }
@@ -169,6 +168,9 @@ public final class OrangeCloudAPI<SESS_T extends Session> {
      * @param entry   folder object to list. Can be null to get the root access.
      * @param success callback returning a Entry (folders and its contents)
      * @param failure callback when error occurred
+     *
+     * @deprecated
+     *    Replaced by {@link #listEntries(com.orange.labs.sdk.OrangeCloudAPI.Entry, JSONObject, com.orange.labs.sdk.OrangeListener.Success, com.orange.labs.sdk.OrangeListener.Error)}
      */
     @Deprecated
     public void listFolder(final Entry entry,
@@ -249,7 +251,6 @@ public final class OrangeCloudAPI<SESS_T extends Session> {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.v("listEntries", response.toString());
                         success.onResponse(new Entry(response));
                     }
                 }, new OrangeListener.Error() {
@@ -819,6 +820,11 @@ public final class OrangeCloudAPI<SESS_T extends Session> {
         public List<Entry> contents;
 
         /**
+         * A metadata information.
+         */
+        public Metadata metadata;
+
+        /**
          * Empty constructor
          */
         public Entry() {}
@@ -879,6 +885,7 @@ public final class OrangeCloudAPI<SESS_T extends Session> {
                     }
                 }
             }
+            //metadata = new Metadata(jsonObject.optJSONObject("metadata"));
         }
 
         private static String humanReadableByteCount(long bytes, boolean si) {
@@ -895,7 +902,7 @@ public final class OrangeCloudAPI<SESS_T extends Session> {
          * @param info JSONObject returned by file info request
          */
         public void setExtraInfos(JSONObject info) {
-
+            //Log.v("extra Info", info.toString());
             bytes = info.optLong("size");
             size = humanReadableByteCount(bytes, true);
 
@@ -904,14 +911,16 @@ public final class OrangeCloudAPI<SESS_T extends Session> {
             thumbnailURL = info.optString("thumbUrl");
 
             String date = info.optString("creationDate");
-            if (date != null) {
+            if (date != "") {
                 try {
                     creationDate = formatter.parse(date);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
             }
+            metadata = new Metadata(info.optJSONObject("metadata"));
             extraInfoAvailable = true;
+
         }
 
         /**
@@ -919,6 +928,33 @@ public final class OrangeCloudAPI<SESS_T extends Session> {
          */
         public static enum Type {
             IMAGE, FILE, VIDEO, MUSIC, DIRECTORY
+        }
+    }
+
+    public static class Metadata {
+
+        public String height;
+        public String width;
+        public Date shootingDate;
+
+        /**
+         * Creates metadata entry from a json Object, usually received from the list folder or
+         * an explicit file info on a file
+         *
+         * @param jsonObject the jsonObject representation of the JSON received from the
+         *                   list folder call, which should look like this:
+         */
+        public Metadata(JSONObject jsonObject) {
+            this.height = jsonObject.optString("height");
+            this.width = jsonObject.optString("width");
+            String date = jsonObject.optString("shootingDate");
+            if (date != "") {
+                try {
+                    shootingDate = Entry.formatter.parse(date);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }

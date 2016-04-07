@@ -25,7 +25,6 @@ package com.orange.labs.sample.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,7 +48,6 @@ public class EntryListAdapter extends EntryAdapter {
 
     public EntryListAdapter(Context context) {
         super(context);
-
         mDateFormat = new SimpleDateFormat("dd MM yyyy HH:mm", Locale.US);
     }
 
@@ -128,7 +126,7 @@ public class EntryListAdapter extends EntryAdapter {
                     setExtraInfo(viewHolder, entry);
                 }
             } else {
-                viewHolder.thumbView.setImageResource(R.mipmap.folder);
+                viewHolder.thumbView.setImageResource(R.drawable.ic_folder);
                 viewHolder.dateView.setVisibility(View.GONE);
                 viewHolder.extraView.setVisibility(View.GONE);
             }

@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.orange.labs.sample"
-        minSdkVersion 12
+        minSdkVersion 15
         targetSdkVersion 23
         versionCode 6
         versionName "1.0.6"

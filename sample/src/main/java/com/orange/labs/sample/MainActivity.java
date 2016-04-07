@@ -28,15 +28,15 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -46,6 +46,8 @@ import com.orange.labs.sdk.OrangeCloudAPI;
 import com.orange.labs.sdk.OrangeListener;
 import com.orange.labs.sdk.exception.OrangeAPIException;
 import com.orange.labs.sdk.session.AuthSession;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
         implements
@@ -62,9 +64,9 @@ public class MainActivity extends AppCompatActivity
     //
     // https://developer.orange.com/apis/cloud-france/api-reference
     //
-    final static private String APP_KEY = "oW5zJ83QPJGGfOGGMmz35O8sqjeAaXBt";
-    final static private String APP_SECRET = "bjoOI4NmTJLo9Qsw";
-    final static private String APP_REDIRECT_URI = "filepicker://callback";
+    final static private String APP_KEY = "your client app key";
+    final static private String APP_SECRET = "your client app secret";
+    final static private String APP_REDIRECT_URI = "your client redirect uri";
 
     ///////////////////////////////////////////////////////////////////////////
     //                      End app-specific settings.                       //
@@ -106,13 +108,15 @@ public class MainActivity extends AppCompatActivity
             AuthSession session = new AuthSession(MainActivity.this, APP_KEY, APP_SECRET, APP_REDIRECT_URI);
 
             mApi = new OrangeCloudAPI<>(session);
+            Log.v("MainActivity", "Orange Cloud SDK Version: " + mApi.SDK_VERSION);
 
-            // An you can set a Image cache policy
-            mApi.setImageCache(new LruBitmapCache());
+                    // An you can set a Image cache policy
+                    mApi.setImageCache(new LruBitmapCache());
 
-            // Add scope for example cloudfullread
-            // (see https://developer.orange.com/apis/cloud-france/api-reference)
-            // mApi.addScope("cloudfullread");
+            /** Add scope for example cloudfullread
+             * (see https://developer.orange.com/apis/cloud-france/api-reference)
+             */
+             //mApi.addScope("cloudfullread");
 
             // Start session
             session.startAuthentication();
@@ -142,7 +146,6 @@ public class MainActivity extends AppCompatActivity
                     mainStateNonce = "mainStateNonce";
                     // Load default fragment
                     loadFragment(new FolderFragment(), false);
-
                 }
             }, new OrangeListener.Error() {
                 @Override
@@ -155,18 +158,15 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        Log.v("onActivityResult", resultCode + " - " + requestCode);
         // Called when picture has been selected
         if (resultCode == RESULT_OK) {
-            //if (requestCode == 1) {
-                Uri uri = intent.getData();
-                // Check that currentFragment is a FolderFragment and get the current folder to upload on it.
-                Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-                if (fragment instanceof FolderFragment) {
-                    UploadPicture upload = new UploadPicture(this, mApi, ((FolderFragment) fragment).getEntry(), uri);
-                    upload.execute();
-                }
-            //}
+            Uri uri = intent.getData();
+            // Check that currentFragment is a FolderFragment and get the current folder to upload on it.
+            Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+            if (fragment instanceof FolderFragment) {
+                UploadPicture upload = new UploadPicture(this, mApi, ((FolderFragment) fragment).getEntry(), uri);
+                upload.execute();
+            }
         }
     }
 
@@ -222,6 +222,10 @@ public class MainActivity extends AppCompatActivity
         fragmentTransaction.commit();
     }
 
+    /**
+     * Getter
+     * @return instance of Orange Cloud Api
+     */
     public OrangeCloudAPI<AuthSession> getOrangeCloudApi() {
         return mApi;
     }
@@ -238,7 +242,6 @@ public class MainActivity extends AppCompatActivity
             bundle.putString("FOLDER_ID", identifier);
             fragment.setArguments(bundle);
         }
-
         loadFragment(fragment, (identifier != null));
     }
 
@@ -261,14 +264,15 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
-
+    /**
+     * Called by Upload Picture to refresh data of fragment after an Upload.
+     */
     public void refreshData() {
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
         if (fragment instanceof FolderFragment) {
             ((FolderFragment) fragment).refreshData();
         }
     }
-
 
     /**
      * Called when users clicks on logout Menu
@@ -277,10 +281,9 @@ public class MainActivity extends AppCompatActivity
     public void logout() {
         // Clean session
         AuthSession session = mApi.getSession();
-        // To force reload of ListFragment
-        //cleanData();
         mainStateNonce = null;
         mApi.unlink();
+        FolderFragment.breadcrumbs = new ArrayList<>();
         session.startAuthentication();
     }
 

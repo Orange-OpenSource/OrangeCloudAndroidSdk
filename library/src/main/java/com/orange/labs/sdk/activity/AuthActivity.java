@@ -119,8 +119,6 @@ public class AuthActivity extends Activity {
             if (appForceLogin) {
                 url += "&prompt=login%20consent";
             }
-            Log.v("TEST", mWebView.getSettings().getUserAgentString());
-            Log.v("URL", url);
             mWebView.loadUrl(url);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();

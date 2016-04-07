@@ -24,7 +24,6 @@
 package com.orange.labs.sdk.exception;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.android.volley.VolleyError;
 

@@ -6,12 +6,12 @@
         android:id="@+id/action_add_folder"
         android:orderInCategory="100"
         android:title="@string/action_add_folder"
-        android:icon="@android:drawable/ic_menu_add"
+        android:icon="@drawable/ic_add"
         app:showAsAction="always" />
     <item
         android:id="@+id/action_upload"
         android:orderInCategory="100"
         android:title="@string/action_upload"
-        android:icon="@android:drawable/ic_menu_upload"
+        android:icon="@drawable/ic_cloud_upload"
         app:showAsAction="always" />
 </menu>

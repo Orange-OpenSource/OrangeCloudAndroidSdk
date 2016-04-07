@@ -61,7 +61,7 @@
 
     <ImageButton
         android:id="@+id/more_button"
-        android:src="@mipmap/dots"
+        android:src="@drawable/ic_more"
         android:textSize="18sp"
         android:background="@android:color/transparent"
         android:textStyle="bold"

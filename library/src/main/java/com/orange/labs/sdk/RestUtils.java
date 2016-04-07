@@ -26,16 +26,17 @@ package com.orange.labs.sdk;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
+import android.widget.ImageView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -73,10 +74,12 @@ public class RestUtils {
         mContext = context;
 
         // Fix maxWidth & maxHeight of screen
-        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        Display display = wm.getDefaultDisplay();
-        maxWidth = display.getWidth();
-        maxHeight = display.getHeight();
+        DisplayMetrics metrics = new DisplayMetrics();
+        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        windowManager.getDefaultDisplay().getMetrics(metrics);
+
+        maxWidth = metrics.widthPixels;
+        maxHeight = metrics.heightPixels;
     }
 
     public void setCache(ImageLoader.ImageCache cache) {

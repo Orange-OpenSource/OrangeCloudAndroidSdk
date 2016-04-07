@@ -10,7 +10,7 @@ First,  you have to **register your app** on the [Orange developer portal](http:
 Adding SDK to existing projects with JitPack.io
 -----------------------------------------------
 
-We use JitPack.io to deliver an Android library for [Orange Cloud Sdk Android](https://jitpack.io/#Orange-OpenSource/OrangeCloudAndroidSdk/1.0.5)
+We use JitPack.io to deliver an Android library for [Orange Cloud Sdk Android](https://jitpack.io/#Orange-OpenSource/OrangeCloudAndroidSdk/1.0.6)
 
 Add it to your build.gradle with:
 
@@ -25,14 +25,14 @@ and:
 ```gradle
 dependencies {
     // Orange Cloud Android Sdk
-    compile 'com.github.Orange-OpenSource:OrangeCloudAndroidSdk:1.0.5'
+    compile 'com.github.Orange-OpenSource:OrangeCloudAndroidSdk:1.0.6'
 }
 ```
 
 Sample app 
 ----------------
-Sample app is a very basic Android app that authenticates and then offers basic actions (browse, delete, create folders and upload files). 
-You can import sample project into **Android Studio** by clicking in **File > Import Projects...** and select Sample directory.
+Sample app is a very basic Android app that authenticates Orange user and then offers basic actions (browse, delete, create, rename, copy, move folder or files and upload files). 
+You can import sample project into **Android Studio** by clicking in **File > Import Projects...** and select **sample** directory.
 
 You'll need to edit the code to enter your app key, your app secret and redirect uri where indicated in the MainActivity.java file.
 
@@ -65,7 +65,7 @@ Make sure that your app has the internet permission. Insert the following code u
 <uses-permission android:name="android.permission.INTERNET"></uses-permission>
 ```
 
-In your `Activity.java`, you need to define contants get on [Orange developer portal](http://api.orange.com)
+In your `Activity.java`, you need to define contants get on [Orange developer portal](https://developer.orange.com)
 ```Java
 final static private String APP_KEY = "your client app key";
 final static private String APP_SECRET = "your client app secret";
@@ -111,7 +111,7 @@ protected void onResume() {
 Add scopes
 ----------
 
-Before to call `mApi.getSession().startAuthentication();`, you can add new scopes. For example, if you have access to Cloud Full Read API (see documentation on [Cloud Api Reference](https://www.orangepartner.com/content/api-reference-cloud)), you can add this scope like :
+Before to call `mApi.getSession().startAuthentication();`, you can add new scopes. For example, if you have access to Cloud Full Read API (see documentation on [Cloud Api Reference](https://developer.orange.com/apis/cloud-france/api-reference)), you can add this scope like :
 
 ```Java
 // Add scope "cloudfullread"
@@ -122,11 +122,11 @@ session.startAuthentication();
 ``` 
 
 
-Listing folders
+Listing contents
 --------------------
 To list folder and contents, you have to pass an **Entry** object (`null`to get the root). An entry is a representation of file or folder.
 ```Java
-mApi.listFolder(anEntry, new OrangeListener.Success<OrangeCloudAPI.Entry>() {
+mApi.listEntries(anEntry, parameters, new OrangeListener.Success<OrangeCloudAPI.Entry>() {
 	Override
 	public void onResponse(OrangeCloudAPI.Entry response) {
 		// success
@@ -138,7 +138,10 @@ mApi.listFolder(anEntry, new OrangeListener.Success<OrangeCloudAPI.Entry>() {
 	}
 });
 ```
-**listFolder()** function returns just the unique identifier and name of files. If you want more informations about file, you have to call **fileInfo()** function to get the creation date, size and thumbnail and content URLs
+
+**parameters** is an JSONObject parameters. You can enable pagination or other parameters (see [Cloud Api Reference](https://developer.orange.com/apis/cloud-france/api-reference))
+
+**listContents()** function returns just the unique identifier and name of files. If you want more informations about file, you have to call **fileInfo()** function to get the creation date, size and thumbnail and content URLs
 ```Java
 mApi.fileInfo(fileEntry, new OrangeListener.Success<OrangeCloudAPI.Entry>() {
 	@Override
@@ -185,6 +188,58 @@ mApi.delete(entryToRemove, new OrangeListener.Success<String>() {
 	}
 });
 ```
+
+Rename folder or file [new]
+------------------------------
+You can rename a file or a folder by calling rename function.
+```Java
+mApi.rename(entryToRename, name, new OrangeListener.Success<String>() {
+	@Override
+	public void onResponse(String response) {
+		// File or folder entry has been deleted                   
+	}
+}, new OrangeListener.Error() {
+	@Override
+	public void onErrorResponse(OrangeAPIException error) {
+		// Error occurred
+	}
+});
+```
+Copy folder or file [new]
+------------------------------
+You can copy a file or a folder by calling copy function.
+```Java
+mApi.copy(entryToCopy, destination, new OrangeListener.Success<String>() {
+	@Override
+	public void onResponse(String response) {
+		// File or folder entry has been deleted                   
+	}
+}, new OrangeListener.Error() {
+	@Override
+	public void onErrorResponse(OrangeAPIException error) {
+		// Error occurred
+	}
+});
+```
+**Note:** You can not copy a folder in the same parent.
+
+Move folder or file [new]
+------------------------------
+You can copy a file or a folder by calling copy function.
+```Java
+mApi.copy(entryToCopy, destination, new OrangeListener.Success<String>() {
+	@Override
+	public void onResponse(String response) {
+		// File or folder entry has been deleted                   
+	}
+}, new OrangeListener.Error() {
+	@Override
+	public void onErrorResponse(OrangeAPIException error) {
+		// Error occurred
+	}
+});
+```
+**Note:** You can not copy a folder in the same parent.
 
 Upload a File
 -------------------
