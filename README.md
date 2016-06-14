@@ -51,14 +51,8 @@ You need to enter the following snippet in your **AndroidManifest.xml** in order
 ```XML
 <activity
 	android:name="com.orange.labs.sdk.activity.AuthActivity"
-	android:launchMode="singleTask">
-	android:configChanges="orientation|keyboard">
-	<intent-filter>
-		<action android:name="android.intent.action.VIEW" />
-		<category android:name="android.intent.category.BROWSABLE"/>
-		<category android:name="android.intent.category.DEFAULT" />
-	</intent-filter>
-</activity>
+	android:launchMode="singleTask"
+	android:configChanges="orientation|keyboard"/>
 ```
 Make sure that your app has the internet permission. Insert the following code under the `<manifest>` section
 ```XML
