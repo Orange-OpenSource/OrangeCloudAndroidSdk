@@ -741,7 +741,7 @@ public final class OrangeCloudAPI<SESS_T extends Session> {
      *
      * @return a Map containing minimal headers needed to Cloud Api
      */
-    private Map<String, String> getHeaders() {
+    public Map<String, String> getHeaders() {
         HashMap<String, String> headers = new HashMap<String, String>();
         headers.put("Authorization", "Bearer " + getSession().getAccessToken());
         Log.v("headers", "Bearer " + getSession().getAccessToken());

@@ -266,7 +266,7 @@ startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
 ```
 File content features
 -----------------------------
-SDK not offers basic methods to download and save file on the disk but you are able to develop thanks to Entry properties (thumbnailURL, previewURL, downloadURL).
+SDK not offers basic methods to download and save file on the disk but you are able to develop thanks to Entry properties (thumbnailURL, previewURL, downloadURL) and getHeaders() from OrangeCloudAPI.
 **/!\\** Theses properties are available after a fileInfo request.
 
 You can display easily the thumbnail of an entry file. It is a very small graphical representation of the file, only available for some file type (photo, pdf, ...)
