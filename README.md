@@ -51,14 +51,8 @@ You need to enter the following snippet in your **AndroidManifest.xml** in order
 ```XML
 <activity
 	android:name="com.orange.labs.sdk.activity.AuthActivity"
-	android:launchMode="singleTask">
-	android:configChanges="orientation|keyboard">
-	<intent-filter>
-		<action android:name="android.intent.action.VIEW" />
-		<category android:name="android.intent.category.BROWSABLE"/>
-		<category android:name="android.intent.category.DEFAULT" />
-	</intent-filter>
-</activity>
+	android:launchMode="singleTask"
+	android:configChanges="orientation|keyboard"/>
 ```
 Make sure that your app has the internet permission. Insert the following code under the `<manifest>` section
 ```XML
@@ -272,7 +266,7 @@ startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
 ```
 File content features
 -----------------------------
-SDK not offers basic methods to download and save file on the disk but you are able to develop thanks to Entry properties (thumbnailURL, previewURL, downloadURL).
+SDK not offers basic methods to download and save file on the disk but you are able to develop thanks to Entry properties (thumbnailURL, previewURL, downloadURL) and getHeaders() from OrangeCloudAPI.
 **/!\\** Theses properties are available after a fileInfo request.
 
 You can display easily the thumbnail of an entry file. It is a very small graphical representation of the file, only available for some file type (photo, pdf, ...)
