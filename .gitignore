@@ -6,4 +6,4 @@
 /build
 *.iml
 /.idea
-
+gradle.properties

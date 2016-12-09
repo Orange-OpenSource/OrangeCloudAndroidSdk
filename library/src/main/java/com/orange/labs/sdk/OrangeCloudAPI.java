@@ -60,7 +60,7 @@ public final class OrangeCloudAPI<SESS_T extends Session> {
     /**
      * The version of this Orange SDK.
      */
-    public static final String SDK_VERSION = "1.0.6";
+    public static final String SDK_VERSION = "1.0.7";
     // Server information
     private static String API_URL = "https://api.orange.com/cloud/";
     private static String API_CONTENT_URL = "https://cloudapi.orange.com/cloud/";
@@ -744,7 +744,9 @@ public final class OrangeCloudAPI<SESS_T extends Session> {
     public Map<String, String> getHeaders() {
         HashMap<String, String> headers = new HashMap<String, String>();
         headers.put("Authorization", "Bearer " + getSession().getAccessToken());
-        Log.v("headers", "Bearer " + getSession().getAccessToken());
+        headers.put("X-OAPI-Agent", "Android-" + SDK_VERSION);
+        Log.v("Authorization: ", "Bearer " + getSession().getAccessToken());
+        Log.v("X-OAPI-Agent:", "Android-" + SDK_VERSION);
         return headers;
     }
 
